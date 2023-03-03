@@ -1,11 +1,12 @@
 name: reduced_fluttertriple
-description: reduced for fluttertriple.
 version: 0.1.0
-homepage:
+description: Implementation of the state management API 'reduced' on top of the state management framework 'FlutterTriple'.
+homepage: https://github.com/partmaster/reduced_fluttertriple
+repository: https://github.com/partmaster/reduced_fluttertriple.git
 publish_to: none
 
 environment:
-  sdk: '>=2.18.2 <3.0.0'
+  sdk: '>=2.19.3 <3.0.0'
   flutter: ">=1.17.0"
 
 dependencies:
