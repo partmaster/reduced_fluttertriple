@@ -1,4 +1,4 @@
 // reduced_fluttertriple.dart
 
-export 'src/fluttertriple_reducible.dart';
-export 'src/fluttertriple_wrapper.dart';
+export 'src/fluttertriple_store.dart';
+export 'src/fluttertriple_widgets.dart';

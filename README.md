@@ -7,61 +7,77 @@
 
 Implementation of the 'reduced' API for the 'fluttertriple' state management framework with following features:
 
-1. Implementation of the ```Reducible``` interface 
-2. Extension on the ```BuildContext``` for convenient access to the  ```Reducible``` instance.
+1. Implementation of the ```ReducedStore``` interface 
+2. Extension on the ```BuildContext``` for convenient access to the  ```ReducedStore``` instance.
 3. Register a state for management.
 4. Trigger a rebuild on widgets selectively after a state change.
 
 ## Features
 
-#### 1. Implementation of the ```Reducible``` interface 
+#### 1. Implementation of the ```ReducedStore``` interface 
 
 ```dart
-class ReducibleStreamStore<S extends Object>
-    extends StreamStore<Object, S> implements Reducible<S> {
-  ReducibleStreamStore(super.initialState);
+class ReducedStreamStore<S extends Object>
+    extends StreamStore<Object, S> implements ReducedStore<S> {
+  ReducedStreamStore(super.initialState);
 
   @override
   reduce(reducer) => update(reducer(state));
 }
 ```
 
-#### 2. Extension on the ```BuildContext``` for convenient access to the  ```Reducible``` instance.
+#### 2. Extension on the ```BuildContext``` for convenient access to the  ```ReducedStore``` instance.
 
 ```dart
 extension ExtensionStoreOnBuildContext on BuildContext {
-  ReducibleStreamStore<S> store<S extends Object>() =>
-      InheritedValueWidget.of<ReducibleStreamStore<S>>(this);
+  ReducedStreamStore<S> store<S extends Object>() =>
+      InheritedValueWidget.of<ReducedStreamStore<S>>(this);
 }
 ```
 
 #### 3. Register a state for management.
 
 ```dart
-Widget wrapWithProvider<S extends Object>({
-  required S initialState,
-  required Widget child,
-}) =>
-    StatefulInheritedValueWidget(
-      converter: (rawValue) => ReducibleStreamStore(rawValue),
-      rawValue: initialState,
-      child: child,
-    );
+class ReducedProvider<S extends Object> extends StatelessWidget {
+  const ReducedProvider({
+    super.key,
+    required this.initialState,
+    required this.child,
+  });
+
+  final S initialState;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => StatefulInheritedValueWidget(
+        converter: (rawValue) => ReducedStreamStore(rawValue),
+        rawValue: initialState,
+        child: child,
+      );
+}
 ```
 
 #### 4. Trigger a rebuild on widgets selectively after a state change.
 
 ```dart
-extension WrapWithConsumer<S extends Object>
-    on ReducibleStreamStore<S> {
-  Widget wrapWithConsumer<P>({
-    required ReducedTransformer<S, P> transformer,
-    required ReducedWidgetBuilder<P> builder,
-  }) =>
-      ScopedBuilder<ReducibleStreamStore<S>, Object, S>(
-        store: this,
-        distinct: (_) => transformer(this),
-        onState: (_, __) => builder(props: transformer(this)),
+class ReducedConsumer<S extends Object, P> extends StatelessWidget {
+  const ReducedConsumer({
+    super.key,
+    required this.transformer,
+    required this.builder,
+  });
+
+  final ReducedTransformer<S, P> transformer;
+  final ReducedWidgetBuilder<P> builder;
+
+  @override
+  Widget build(BuildContext context) => _build(context.store<S>());
+
+  Widget _build(ReducedStreamStore<S> store) =>
+      ScopedBuilder<ReducedStreamStore<S>, Object, S>(
+        store: store,
+        distinct: (_) => transformer(store),
+        onState: (_, __) => builder(props: transformer(store)),
       );
 }
 ```
@@ -72,8 +88,8 @@ In the pubspec.yaml add dependencies on the package 'reduced' and on the package
 
 ```
 dependencies:
-  reduced: ^0.1.0
-  reduced_fluttertriple: ^0.1.0
+  reduced: 0.2.1
+  reduced_fluttertriple: 0.2.1
 ```
 
 Import package 'reduced' to implement the logic.
@@ -112,9 +128,9 @@ class Props {
 }
 
 class PropsTransformer {
-  static Props transform(Reducible<int> reducible) => Props(
-        counterText: '${reducible.state}',
-        onPressed: CallableAdapter(reducible, Incrementer()),
+  static Props transform(ReducedStore<int> store) => Props(
+        counterText: '${store.state}',
+        onPressed: CallableAdapter(store, Incrementer()),
       );
 }
 
@@ -163,16 +179,13 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) => wrapWithProvider(
+  Widget build(BuildContext context) => ReducedProvider(
         initialState: 0,
         child: MaterialApp(
           theme: ThemeData(primarySwatch: Colors.blue),
-          home: Builder(
-            builder: (context) =>
-                context.store<int>().wrapWithConsumer(
-                      transformer: PropsTransformer.transform,
-                      builder: MyHomePage.new,
-                    ),
+          home: const ReducedConsumer(
+            transformer: PropsTransformer.transform,
+            builder: MyHomePage.new,
           ),
         ),
       );
