@@ -17,14 +17,26 @@ Widget wrapWithProvider<S extends Object>({
       child: child,
     );
 
-extension WrapWithConsumer<S extends Object> on ReducibleStreamStore<S> {
-  Widget wrapWithConsumer<P>({
-    required ReducedTransformer<S, P> transformer,
-    required ReducedWidgetBuilder<P> builder,
-  }) =>
-      ScopedBuilder<ReducibleStreamStore<S>, Object, S>(
-        store: this,
-        distinct: (_) => transformer(this),
-        onState: (_, __) => builder(props: transformer(this)),
-      );
-}
+Widget wrapWithConsumer<S extends Object, P>({
+  required ReducedTransformer<S, P> transformer,
+  required ReducedWidgetBuilder<P> builder,
+}) =>
+    Builder(
+        builder: (context) => internalWrapWithConsumer(
+              store: context.store<S>(),
+              transformer: transformer,
+              builder: builder,
+            ));
+
+@visibleForTesting
+ScopedBuilder<ReducibleStreamStore<S>, Object, S>
+    internalWrapWithConsumer<S extends Object, P>({
+  required ReducibleStreamStore<S> store,
+  required ReducedTransformer<S, P> transformer,
+  required ReducedWidgetBuilder<P> builder,
+}) =>
+        ScopedBuilder<ReducibleStreamStore<S>, Object, S>(
+          store: store,
+          distinct: (_) => transformer(store),
+          onState: (_, __) => builder(props: transformer(store)),
+        );
