@@ -10,7 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   reduced: 0.2.1
-  reduced_setstate: 
+  reduced_fluttertriple: 
     path: ../../
 
 dev_dependencies:

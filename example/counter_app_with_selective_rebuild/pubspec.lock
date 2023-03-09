@@ -67,6 +67,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_triple:
+    dependency: transitive
+    description:
+      name: flutter_triple
+      sha256: f20a00240747613d25b89cecb27c165896deb3a79788ce0a65206a29547fc971
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.7+4"
   js:
     dependency: transitive
     description:
@@ -123,13 +131,21 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.2.1"
-  reduced_setstate:
+  reduced_fluttertriple:
     dependency: "direct main"
     description:
       path: "../.."
       relative: true
     source: path
     version: "0.2.1"
+  rx_notifier:
+    dependency: transitive
+    description:
+      name: rx_notifier
+      sha256: "8d012982a36882eb019982ecfdf247cdeb2468972ac2c7d49cd49dccadde7a2c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -183,6 +199,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.4.16"
+  triple:
+    dependency: transitive
+    description:
+      name: triple
+      sha256: ecade2cfd2bd6860d96ece3c819a5166164eaff604a1569e253f519c5abd6f51
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.5.0+1"
   vector_math:
     dependency: transitive
     description:

@@ -1,7 +1,7 @@
 // provider.dart
 
 import 'package:flutter/widgets.dart';
-import 'package:reduced_setstate/reduced_fluttertriple.dart';
+import 'package:reduced_fluttertriple/reduced_fluttertriple.dart';
 
 import 'state.dart';
 

@@ -2,7 +2,7 @@
 
 import 'package:flutter/widgets.dart';
 import 'package:reduced/reduced.dart';
-import 'package:reduced_setstate/reduced_fluttertriple.dart';
+import 'package:reduced_fluttertriple/reduced_fluttertriple.dart';
 
 import 'props.dart';
 import 'transformer.dart';
