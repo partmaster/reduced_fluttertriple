@@ -11,7 +11,7 @@ class ReducedStreamStore<S extends Object> extends StreamStore<Object, S>
   ReducedStreamStore(super.initialState);
 
   @override
-  reduce(reducer) => update(reducer(state));
+  dispatch(event) => update(event(state));
 }
 
 extension ExtensionStoreOnBuildContext on BuildContext {

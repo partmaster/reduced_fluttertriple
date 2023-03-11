@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:reduced/reduced.dart';
 import 'package:reduced_fluttertriple/reduced_fluttertriple.dart';
 
-class Incrementer extends Reducer<int> {
+class CounterIncremented extends Event<int> {
   @override
   int call(int state) => state + 1;
 }
@@ -20,7 +20,7 @@ void main() {
 
   test('ReducibleStreamStore reduce', () async {
     final objectUnderTest = ReducedStreamStore(0);
-    objectUnderTest.reduce(Incrementer());
+    objectUnderTest.dispatch(CounterIncremented());
     expect(objectUnderTest.state, 1);
   });
 }
