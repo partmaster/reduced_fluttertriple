@@ -8,17 +8,17 @@ class CounterIncremented extends Event<int> {
 }
 
 void main() {
-  test('ReducibleStreamStore state 0', () {
+  test('ReducedStreamStore state 0', () {
     final objectUnderTest = ReducedStreamStore(0);
     expect(objectUnderTest.state, 0);
   });
 
-  test('ReducibleStreamStore state 1', () {
+  test('ReducedStreamStore state 1', () {
     final objectUnderTest = ReducedStreamStore(1);
     expect(objectUnderTest.state, 1);
   });
 
-  test('ReducibleStreamStore reduce', () async {
+  test('ReducedStreamStore dispatch', () async {
     final objectUnderTest = ReducedStreamStore(0);
     objectUnderTest.dispatch(CounterIncremented());
     expect(objectUnderTest.state, 1);
