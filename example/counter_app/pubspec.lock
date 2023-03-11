@@ -126,12 +126,11 @@ packages:
   reduced:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "v0.3.0"
-      resolved-ref: "03a5357d0566e0537811a5515080aa8cbdee4ff4"
-      url: "https://github.com/partmaster/reduced.git"
-    source: git
-    version: "0.3.0"
+      name: reduced
+      sha256: "12d5de4bb6a02b257dd46391343138fba99a2fcbc1fd6c6c65009e4ec2d6fc36"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.1"
   reduced_fluttertriple:
     dependency: "direct main"
     description:
