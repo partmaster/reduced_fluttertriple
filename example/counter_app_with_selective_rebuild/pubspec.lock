@@ -129,7 +129,7 @@ packages:
       path: "."
       ref: "v0.3.0"
       resolved-ref: "03a5357d0566e0537811a5515080aa8cbdee4ff4"
-      url: "https://github.com/partmaster/reduced"
+      url: "https://github.com/partmaster/reduced.git"
     source: git
     version: "0.3.0"
   reduced_fluttertriple:
