@@ -1,5 +1,5 @@
 name: reduced_fluttertriple
-version: 0.3.0
+version: 0.3.1
 description: Implementation of the state management API 'reduced' on top of the state management framework 'FlutterTriple'.
 homepage: https://github.com/partmaster/reduced_fluttertriple
 repository: https://github.com/partmaster/reduced_fluttertriple.git
