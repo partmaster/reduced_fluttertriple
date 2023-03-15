@@ -28,12 +28,12 @@ class ReducedProvider<S extends Object> extends StatelessWidget {
 class ReducedConsumer<S extends Object, P> extends StatelessWidget {
   const ReducedConsumer({
     super.key,
-    required this.transformer,
+    required this.mapper,
     required this.builder,
   });
 
-  final ReducedTransformer<S, P> transformer;
-  final ReducedWidgetBuilder<P> builder;
+  final StateToPropsMapper<S, P> mapper;
+  final WidgetFromPropsBuilder<P> builder;
 
   @override
   Widget build(BuildContext context) => _build(context.store<S>());
@@ -41,7 +41,12 @@ class ReducedConsumer<S extends Object, P> extends StatelessWidget {
   Widget _build(ReducedStreamStore<S> store) =>
       ScopedBuilder<ReducedStreamStore<S>, Object, S>(
         store: store,
-        distinct: (_) => transformer(store),
-        onState: (_, __) => builder(props: transformer(store)),
+        distinct: (_) => mapper(store.state, store),
+        onState: (_, __) => builder(
+          props: mapper(
+            store.state,
+            store,
+          ),
+        ),
       );
 }

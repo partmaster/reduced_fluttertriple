@@ -18,9 +18,9 @@ void main() {
     expect(objectUnderTest.state, 1);
   });
 
-  test('ReducedStreamStore dispatch', () async {
+  test('ReducedStreamStore process', () {
     final objectUnderTest = ReducedStreamStore(0);
-    objectUnderTest.dispatch(CounterIncremented());
+    objectUnderTest.process(CounterIncremented());
     expect(objectUnderTest.state, 1);
   });
 }

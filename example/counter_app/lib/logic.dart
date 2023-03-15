@@ -2,25 +2,26 @@
 
 import 'package:flutter/material.dart';
 import 'package:reduced/reduced.dart';
+import 'package:reduced/callbacks.dart';
 
-class Incrementer extends Event<int> {
+class CounterIncremented extends Event<int> {
   @override
   int call(int state) => state + 1;
 }
 
 class Props {
-  Props({required this.counterText, required this.onPressed});
+  const Props({required this.counterText, required this.onPressed});
+
   final String counterText;
-  final Callable<void> onPressed;
-  @override
-  toString() => counterText;
+  final VoidCallable onPressed;
 }
 
-class PropsTransformer {
-  static Props transform(ReducedStore<int> store) => Props(
-        counterText: '${store.state}',
-        onPressed: CallableAdapter(store, Incrementer()),
-      );
+class PropsMapper extends Props {
+  PropsMapper(int state, EventProcessor<int> processor)
+      : super(
+          counterText: '$state',
+          onPressed: EventCarrier(processor, CounterIncremented()),
+        );
 }
 
 class MyHomePage extends StatelessWidget {

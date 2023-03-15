@@ -7,26 +7,26 @@
 
 Implementation of the 'reduced' API for the 'fluttertriple' state management framework with following features:
 
-1. Implementation of the ```ReducedStore``` interface 
-2. Extension on the ```BuildContext``` for convenient access to the  ```ReducedStore``` instance.
+1. Implementation of the ```Store``` interface 
+2. Extension on the ```BuildContext``` for convenient access to the  ```Store``` instance.
 3. Register a state for management.
 4. Trigger a rebuild on widgets selectively after a state change.
 
 ## Features
 
-#### 1. Implementation of the ```ReducedStore``` interface 
+#### 1. Implementation of the ```Store``` interface 
 
 ```dart
 class ReducedStreamStore<S extends Object>
-    extends StreamStore<Object, S> implements ReducedStore<S> {
+    extends StreamStore<Object, S> implements Store<S> {
   ReducedStreamStore(super.initialState);
 
   @override
-  reduce(reducer) => update(reducer(state));
+  process(event) => update(event(state));
 }
 ```
 
-#### 2. Extension on the ```BuildContext``` for convenient access to the  ```ReducedStore``` instance.
+#### 2. Extension on the ```BuildContext``` for convenient access to the  ```Store``` instance.
 
 ```dart
 extension ExtensionStoreOnBuildContext on BuildContext {
@@ -63,12 +63,12 @@ class ReducedProvider<S extends Object> extends StatelessWidget {
 class ReducedConsumer<S extends Object, P> extends StatelessWidget {
   const ReducedConsumer({
     super.key,
-    required this.transformer,
+    required this.mapper,
     required this.builder,
   });
 
-  final ReducedTransformer<S, P> transformer;
-  final ReducedWidgetBuilder<P> builder;
+  final StateToPropsMapper<S, P> mapper;
+  final WidgetFromPropsBuilder<P> builder;
 
   @override
   Widget build(BuildContext context) => _build(context.store<S>());
@@ -76,8 +76,13 @@ class ReducedConsumer<S extends Object, P> extends StatelessWidget {
   Widget _build(ReducedStreamStore<S> store) =>
       ScopedBuilder<ReducedStreamStore<S>, Object, S>(
         store: store,
-        distinct: (_) => transformer(store),
-        onState: (_, __) => builder(props: transformer(store)),
+        distinct: (_) => mapper(store.state, store),
+        onState: (_, __) => builder(
+          props: mapper(
+            store.state,
+            store,
+          ),
+        ),
       );
 }
 ```
@@ -88,8 +93,11 @@ In the pubspec.yaml add dependencies on the package 'reduced' and on the package
 
 ```
 dependencies:
-  reduced: 0.2.1
-  reduced_fluttertriple: 0.2.1
+  reduced: 0.4.0
+  reduced_fluttertriple: 
+    git:
+      url: https://github.com/partmaster/reduced_fluttertriple.git
+      ref: v0.4.0
 ```
 
 Import package 'reduced' to implement the logic.
@@ -113,25 +121,26 @@ Implementation of the counter demo app logic with the 'reduced' API without furt
 
 import 'package:flutter/material.dart';
 import 'package:reduced/reduced.dart';
+import 'package:reduced/callbacks.dart';
 
-class Incrementer extends Reducer<int> {
+class CounterIncremented extends Event<int> {
   @override
   int call(int state) => state + 1;
 }
 
 class Props {
-  Props({required this.counterText, required this.onPressed});
+  const Props({required this.counterText, required this.onPressed});
+
   final String counterText;
-  final Callable<void> onPressed;
-  @override
-  toString() => counterText;
+  final VoidCallable onPressed;
 }
 
-class PropsTransformer {
-  static Props transform(ReducedStore<int> store) => Props(
-        counterText: '${store.state}',
-        onPressed: CallableAdapter(store, Incrementer()),
-      );
+class PropsMapper extends Props {
+  PropsMapper(int state, EventProcessor<int> processor)
+      : super(
+          counterText: '$state',
+          onPressed: EventCarrier(processor, CounterIncremented()),
+        );
 }
 
 class MyHomePage extends StatelessWidget {
@@ -184,7 +193,7 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
           theme: ThemeData(primarySwatch: Colors.blue),
           home: const ReducedConsumer(
-            transformer: PropsTransformer.transform,
+            mapper: PropsMapper.new,
             builder: MyHomePage.new,
           ),
         ),
